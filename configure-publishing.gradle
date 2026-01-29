@@ -1,0 +1,52 @@
+/*
+ * multidexlib2 - Copyright 2015-2020 Rodrigo Balerdi
+ * (GNU General Public License version 3 or later)
+ *
+ * multidexlib2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ */
+
+ext.configurePom = { pom ->
+    pom.description = 'Project ExtenVoid'
+    pom.url = 'https://github.com/LuisCupul04/multidexlib2'
+    pom.organization {
+        name = 'ExtenVoid'
+        url = 'https://github.com/LuisCupul04'
+    }
+    pom.licenses {
+        license {
+            name = 'GNU General Public License (version 3 or later)'
+            url = 'https://www.gnu.org/licenses/gpl.txt'
+        }
+    }
+    pom.developers {
+        developer {
+            name = 'LuisCupul04'
+            url = 'https://github.com/LuisCupul04'
+        }
+        developer {
+            name = 'Lanchon'
+            url = 'https://github.com/Lanchon'
+        }
+    }
+    pom.scm {
+        connection = 'scm:git:git://github.com/LuisCupul04/multidexlib2.git'
+        developerConnection = 'scm:git:ssh://github.com:LuisCupul04/multidexlib2.git'
+        url = 'https://github.com/LuisCupul04/multidexlib2'
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/LuisCupul04/multidexlib2")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("gpr.user")?.toString()
+                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")?.toString()
+            }
+        }
+    }
+}

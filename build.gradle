@@ -1,0 +1,60 @@
+/*
+ * multidexlib2 - Copyright 2015-2020 Rodrigo Balerdi
+ * (GNU General Public License version 3 or later)
+ *
+ * multidexlib2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ */
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+def dexlib2Version = '3.0.3'
+def multidexlib2VersionSuffix = '.E3'
+
+group = 'com.extenvoid'
+version = dexlib2Version + multidexlib2VersionSuffix
+
+ext.mainArtifact = 'multidexlib2'
+ext.artifactName = mainArtifact
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+dependencies {
+    api 'com.android.tools.smali:smali-dexlib2:' + dexlib2Version
+    api 'com.google.guava:guava:32.1.2-jre'
+}
+
+apply from: 'configure-artifacts.gradle'
+
+apply from: 'configure-publishing.gradle'
+
+publishing {
+    publications {
+        gpr(MavenPublication) {
+            artifactId = mainArtifact
+            from components.java
+            pom {
+                name = artifactName
+                configurePom it
+            }
+        }
+    }
+}
+
+apply from: 'check-copyright.gradle'
+
+wrapper.distributionType = Wrapper.DistributionType.ALL
