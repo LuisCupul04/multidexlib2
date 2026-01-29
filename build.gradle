@@ -8,53 +8,77 @@
  * or (at your option) any later version.
  */
 
-plugins {
-    id 'java-library'
-    id 'maven-publish'
-    id 'signing'
+ext.configurePom = { pom ->
+    pom.description = 'Project ExtenVoid'
+    pom.url = 'https://github.com/LuisCupul04/multidexlib2'
+    pom.organization {
+        name = 'ExtenVoid'
+        url = 'https://github.com/LuisCupul04'
+    }
+    pom.licenses {
+        license {
+            name = 'GNU General Public License (version 3 or later)'
+            url = 'https://www.gnu.org/licenses/gpl.txt'
+        }
+    }
+    pom.developers {
+        developer {
+            name = 'LuisCupul04'
+            url = 'https://github.com/LuisCupul04'
+        }
+        developer {
+            name = 'Lanchon'
+            url = 'https://github.com/Lanchon'
+        }
+    }
+    pom.scm {
+        connection = 'scm:git:git://github.com/LuisCupul04/multidexlib2.git'
+        developerConnection = 'scm:git:ssh://github.com:LuisCupul04/multidexlib2.git'
+        url = 'https://github.com/LuisCupul04/multidexlib2'
+    }
 }
 
-def dexlib2Version = '3.0.3'
-def multidexlib2VersionSuffix = '.E3'
-
-group = 'com.extenvoid'
-version = dexlib2Version + multidexlib2VersionSuffix
-
-ext.mainArtifact = 'multidexlib2'
-ext.artifactName = mainArtifact
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-repositories {
-    mavenCentral()
-    google()
-}
-
-dependencies {
-    api 'com.android.tools.smali:smali-dexlib2:' + dexlib2Version
-    api 'com.google.guava:guava:32.1.2-jre'
-}
-
-apply from: 'configure-artifacts.gradle'
-
-apply from: 'configure-publishing.gradle'
-
+// 🔥 AÑADE ESTA PARTE CRÍTICA - define QUÉ publicar
 publishing {
     publications {
-        gpr(MavenPublication) {
-            artifactId = mainArtifact
+        mavenJava(MavenPublication) {
+            // Publica el componente Java (jar + fuentes + javadoc si están configurados)
             from components.java
+            
+            // Configura metadatos del POM
             pom {
-                name = artifactName
-                configurePom it
+                name = 'multidexlib2'
+                description = 'Library for reading/writing Android Dalvik executable (dex) files'
+                url = 'https://github.com/LuisCupul04/multidexlib2'
+                
+                // Aplica la configuración personalizada
+                with configurePom
+                
+                // Metadatos específicos de Maven
+                packaging = 'jar'
+            }
+        }
+    }
+    
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/LuisCupul04/multidexlib2")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("gpr.user")?.toString()
+                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")?.toString()
             }
         }
     }
 }
 
-apply from: 'check-copyright.gradle'
-
-wrapper.distributionType = Wrapper.DistributionType.ALL
+// 🔥 AÑADE también la configuración de signing (firma)
+signing {
+    // Solo firma si NO es un snapshot Y estamos ejecutando una tarea de publicación
+    required { 
+        !version.endsWith('-SNAPSHOT') && gradle.taskGraph.hasTask('publish') 
+    }
+    
+    // Firma la publicación mavenJava
+    sign publishing.publications.mavenJava
+}
