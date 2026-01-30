@@ -39,6 +39,20 @@ ext.configurePom = { pom ->
 }
 
 publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            
+            pom {
+                name = 'multidexlib2'
+                description = 'Library for reading/writing Android Dalvik executable (dex) files'
+                url = 'https://github.com/LuisCupul04/multidexlib2'
+                with configurePom
+                packaging = 'jar'
+            }
+        }
+    }
+    
     repositories {
         maven {
             name = "GitHubPackages"
@@ -50,3 +64,10 @@ publishing {
         }
     }
 }
+
+signing {
+    required { 
+        !version.endsWith('-SNAPSHOT') && gradle.taskGraph.hasTask('publish') 
+    }
+    sign publishing.publications.mavenJava
+}mi 
