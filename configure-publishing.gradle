@@ -47,7 +47,9 @@ publishing {
                 name = 'multidexlib2'
                 description = 'Library for reading/writing Android Dalvik executable (dex) files'
                 url = 'https://github.com/LuisCupul04/multidexlib2'
+                
                 with configurePom
+                
                 packaging = 'jar'
             }
         }
@@ -69,5 +71,6 @@ signing {
     required { 
         !version.endsWith('-SNAPSHOT') && gradle.taskGraph.hasTask('publish') 
     }
+    
     sign publishing.publications.mavenJava
-}mi 
+}
