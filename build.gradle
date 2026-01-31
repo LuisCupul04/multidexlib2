@@ -42,19 +42,6 @@ apply from: 'configure-artifacts.gradle'
 
 apply from: 'configure-publishing.gradle'
 
-publishing {
-    publications {
-        gpr(MavenPublication) {
-            artifactId = mainArtifact
-            from components.java
-            pom {
-                name = artifactName
-                configurePom it
-            }
-        }
-    }
-}
-
 apply from: 'check-copyright.gradle'
 
 wrapper.distributionType = Wrapper.DistributionType.ALL
