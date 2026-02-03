@@ -14,8 +14,8 @@ plugins {
     id 'signing'
 }
 
-def dexlib2Version = '3.0.3.A1'
-def multidexlib2VersionSuffix = '.1.RE'
+def dexlib2Version = '3.0.3'
+def multidexlib2VersionSuffix = '.E3.RE'
 
 group = 'com.extenre'
 version = dexlib2Version + multidexlib2VersionSuffix
